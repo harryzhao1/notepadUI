@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "CircleGestureSampleVC.h"
 
 @implementation AppDelegate
 
@@ -14,6 +15,10 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
+    
+    CircleGestureSampleVC *rootVC = [[CircleGestureSampleVC alloc] init];
+    [self.window setRootViewController:rootVC];
+    
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     return YES;

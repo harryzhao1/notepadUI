@@ -19,6 +19,9 @@
 		539A668F1809C0B300F01B73 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 539A66771809C0B300F01B73 /* UIKit.framework */; };
 		539A66971809C0B300F01B73 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 539A66951809C0B300F01B73 /* InfoPlist.strings */; };
 		539A66991809C0B300F01B73 /* NBPadTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 539A66981809C0B300F01B73 /* NBPadTests.m */; };
+		539A66A41809E64B00F01B73 /* CircleGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 539A66A31809E64B00F01B73 /* CircleGestureRecognizer.m */; };
+		539A66A91809F08000F01B73 /* CircleGestureSampleVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 539A66A71809F08000F01B73 /* CircleGestureSampleVC.m */; };
+		539A66AA1809F08000F01B73 /* CircleGestureSampleVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 539A66A81809F08000F01B73 /* CircleGestureSampleVC.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +51,11 @@
 		539A66941809C0B300F01B73 /* NBPadTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "NBPadTests-Info.plist"; sourceTree = "<group>"; };
 		539A66961809C0B300F01B73 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		539A66981809C0B300F01B73 /* NBPadTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NBPadTests.m; sourceTree = "<group>"; };
+		539A66A21809E64B00F01B73 /* CircleGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CircleGestureRecognizer.h; path = CircleGestureRecognizer/CircleGestureRecognizer.h; sourceTree = "<group>"; };
+		539A66A31809E64B00F01B73 /* CircleGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CircleGestureRecognizer.m; path = CircleGestureRecognizer/CircleGestureRecognizer.m; sourceTree = "<group>"; };
+		539A66A61809F08000F01B73 /* CircleGestureSampleVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CircleGestureSampleVC.h; path = CircleGestureSampleVC/CircleGestureSampleVC.h; sourceTree = "<group>"; };
+		539A66A71809F08000F01B73 /* CircleGestureSampleVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CircleGestureSampleVC.m; path = CircleGestureSampleVC/CircleGestureSampleVC.m; sourceTree = "<group>"; };
+		539A66A81809F08000F01B73 /* CircleGestureSampleVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = CircleGestureSampleVC.xib; path = CircleGestureSampleVC/CircleGestureSampleVC.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +119,8 @@
 				539A66831809C0B300F01B73 /* AppDelegate.m */,
 				539A66851809C0B300F01B73 /* Images.xcassets */,
 				539A667A1809C0B300F01B73 /* Supporting Files */,
+				539A66A51809E65100F01B73 /* CircleGestureRecognizer */,
+				539A66AB1809F08400F01B73 /* CircleGestureSampleVC */,
 			);
 			path = NBPad;
 			sourceTree = "<group>";
@@ -142,6 +152,25 @@
 				539A66951809C0B300F01B73 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		539A66A51809E65100F01B73 /* CircleGestureRecognizer */ = {
+			isa = PBXGroup;
+			children = (
+				539A66A21809E64B00F01B73 /* CircleGestureRecognizer.h */,
+				539A66A31809E64B00F01B73 /* CircleGestureRecognizer.m */,
+			);
+			name = CircleGestureRecognizer;
+			sourceTree = "<group>";
+		};
+		539A66AB1809F08400F01B73 /* CircleGestureSampleVC */ = {
+			isa = PBXGroup;
+			children = (
+				539A66A61809F08000F01B73 /* CircleGestureSampleVC.h */,
+				539A66A71809F08000F01B73 /* CircleGestureSampleVC.m */,
+				539A66A81809F08000F01B73 /* CircleGestureSampleVC.xib */,
+			);
+			name = CircleGestureSampleVC;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -219,6 +248,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				539A66AA1809F08000F01B73 /* CircleGestureSampleVC.xib in Resources */,
 				539A667E1809C0B300F01B73 /* InfoPlist.strings in Resources */,
 				539A66861809C0B300F01B73 /* Images.xcassets in Resources */,
 			);
@@ -241,6 +271,8 @@
 			files = (
 				539A66841809C0B300F01B73 /* AppDelegate.m in Sources */,
 				539A66801809C0B300F01B73 /* main.m in Sources */,
+				539A66A91809F08000F01B73 /* CircleGestureSampleVC.m in Sources */,
+				539A66A41809E64B00F01B73 /* CircleGestureRecognizer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
