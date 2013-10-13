@@ -19,6 +19,13 @@
 @end
 
 @implementation CircleGestureRecognizer
+
+- (NSMutableArray *)pointPath {
+    if (!_pointPath)
+        _pointPath = [[NSMutableArray alloc] init];
+    return _pointPath;
+}
+
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     if ([[event touchesForGestureRecognizer:self] count] > 1) {
         NSLog(@"More than one touches. Not circle gesture");
@@ -44,26 +51,11 @@
     [self.pointPath addObject:[NSValue valueWithCGPoint:point]];
     self.runningBoundingBox =  [self expandBox:self.runningBoundingBox WithPoint:point];
 
-    if ([self circleIsCompletedForNewPoint:point]) {
+    if ([self circleIsComplete]) {
         self.state = UIGestureRecognizerStateRecognized;
         if(VERBOSE)
             NSLog(@"detected!");
     }
-}
-
-- (BOOL) circleIsCompletedForNewPoint:(CGPoint)point {
-    float distanceTravelled = [self distanceBetweenPoint:point andPoint:self.startingPoint];
-    float radius = MAX(self.runningBoundingBox.size.width, self.runningBoundingBox.size.height);
-    float target = radius = radius * DETECTION_THRESHOLD;
-    if (VERBOSE)
-        NSLog(@"touches moved, distance:%.4f, target:%.4f", distanceTravelled, target);
-    return distanceTravelled < target;
-}
-
-- (float) distanceBetweenPoint:(CGPoint)p1 andPoint:(CGPoint) p2 {
-    float diffx = p1.x - p2.x;
-    float diffy = p1.y - p2.y;
-    return sqrtf(diffx * diffx + diffy * diffy);
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -79,8 +71,59 @@
     self.runningBoundingBox = CGRectZero;
 }
 
-- (BOOL) formedClosedPath{
-    return NO;
+- (BOOL) circleIsComplete {
+    return [self lastPointisCloseToStartingPoint] || [self lastPointIsCrossingPath];
+}
+
+- (BOOL)lastPointisCloseToStartingPoint {
+    CGPoint point = [[self.pointPath lastObject] CGPointValue];
+    float distanceTravelled = [self distanceBetweenPoint:point andPoint:self.startingPoint];
+    float radius = MAX(self.runningBoundingBox.size.width, self.runningBoundingBox.size.height);
+    float target = radius = radius * DETECTION_THRESHOLD;
+    if (VERBOSE)
+        NSLog(@"touches moved, distance:%.4f, target:%.4f", distanceTravelled, target);
+    return distanceTravelled < target;
+}
+
+- (float) distanceBetweenPoint:(CGPoint)p1 andPoint:(CGPoint) p2 {
+    float diffx = p1.x - p2.x;
+    float diffy = p1.y - p2.y;
+    return sqrtf(diffx * diffx + diffy * diffy);
+}
+
+- (BOOL)lastPointIsCrossingPath {
+    return [self intersectionIndex] != nil;
+}
+
+- (NSNumber *)intersectionIndex {
+    CGPoint last = [[self.pointPath lastObject] CGPointValue];
+    CGPoint secondlast = [self.pointPath[[self.pointPath count] - 2] CGPointValue];
+    for (int i = 1; i < [self.pointPath count] - 2; i ++) {
+        CGPoint pt1 = [self.pointPath[i - 1] CGPointValue];
+        CGPoint pt2 = [self.pointPath[i] CGPointValue];
+        NSValue *intersection = [self intersectionOfLineFrom:last to:secondlast withLineFrom:pt1 to:pt2];
+        if (intersection)
+            return @(i-1);
+    }
+    return nil;
+}
+
+- (NSValue *)intersectionOfLineFrom:(CGPoint)p1 to:(CGPoint)p2 withLineFrom:(CGPoint)p3 to:(CGPoint)p4
+{
+    CGFloat d = (p2.x - p1.x)*(p4.y - p3.y) - (p2.y - p1.y)*(p4.x - p3.x);
+    if (d == 0)
+        return nil; // parallel lines
+    CGFloat u = ((p3.x - p1.x)*(p4.y - p3.y) - (p3.y - p1.y)*(p4.x - p3.x))/d;
+    CGFloat v = ((p3.x - p1.x)*(p2.y - p1.y) - (p3.y - p1.y)*(p2.x - p1.x))/d;
+    if (u < 0.0 || u > 1.0)
+        return nil; // intersection point not between p1 and p2
+    if (v < 0.0 || v > 1.0)
+        return nil; // intersection point not between p3 and p4
+    CGPoint intersection;
+    intersection.x = p1.x + u * (p2.x - p1.x);
+    intersection.y = p1.y + u * (p2.y - p1.y);
+    
+    return [NSValue valueWithCGPoint:intersection];
 }
 
 - (CGRect)expandBox:(CGRect)inital WithPoint:(CGPoint)point {
@@ -97,7 +140,24 @@
 }
 
 - (CGRect)boundingBoxInView:(UIView *)view {
-    return [self.view convertRect:self.runningBoundingBox toView:view];
+    CGRect result = CGRectZero;
+    if ([self lastPointisCloseToStartingPoint])
+        result = self.runningBoundingBox;
+    else if ([self lastPointIsCrossingPath])
+        result = [self boundingBoxForSelfCrossingPath];
+    return [self.view convertRect:result toView:view];
 }
 
+- (CGRect)boundingBoxForSelfCrossingPath {
+    NSNumber *crossingIndex = [self intersectionIndex];
+    if (!crossingIndex)
+        return CGRectZero;
+    CGPoint initialPoint = [self.pointPath[[crossingIndex integerValue]] CGPointValue];
+    CGRect result = CGRectMake(initialPoint.x, initialPoint.y, 0.0f, 0.0f);
+    for (int i = [crossingIndex integerValue]; i < [self.pointPath count]; i++) {
+        CGPoint currentPoint = [self.pointPath[i] CGPointValue];
+        result = [self expandBox:result WithPoint:currentPoint];
+    }
+    return result;
+}
 @end
